@@ -1,0 +1,624 @@
+openapi: 3.0.1
+info:
+  title: Workspace Service
+  version: v1
+servers:
+- url: http://localhost:8080
+  description: Generated server url
+paths:
+  /workspaces/{engagementId}/users:
+    get:
+      tags:
+      - workspace-controller
+      operationId: getUsers
+      parameters:
+      - name: engagementId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/WorkspaceUser'
+    put:
+      tags:
+      - workspace-controller
+      operationId: updateUsers
+      parameters:
+      - name: engagementId
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UpdateUsersRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkspaceResponse'
+  /workspaces/{engagementId}/archive:
+    put:
+      tags:
+      - workspace-controller
+      operationId: archiveWorkspace
+      parameters:
+      - name: engagementId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkspaceResponse'
+  /admin/permissions:
+    get:
+      tags:
+      - workspace-admin-controller
+      operationId: getPermissions
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  type: string
+                  enum:
+                  - CreateWorkspace
+                  - UserManagement
+                  - UpdateWorkspace
+                  - ArchiveWorkspace
+                  - DeleteWorkspace
+    put:
+      tags:
+      - workspace-admin-controller
+      operationId: registerPermission
+      parameters:
+      - name: permissionName
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  type: string
+                  enum:
+                  - CreateWorkspace
+                  - UserManagement
+                  - UpdateWorkspace
+                  - ArchiveWorkspace
+                  - DeleteWorkspace
+  /workspaces:
+    post:
+      tags:
+      - workspace-controller
+      operationId: createWorkspace
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkspaceRequest'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkspaceResponse'
+  /admin/integrated-systems:
+    get:
+      tags:
+      - workspace-admin-controller
+      operationId: getIntegratedApplications
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  type: string
+                  enum:
+                  - Workbench
+                  - CAMS
+                  - XDP
+                  - DS
+                  - EC
+                  - SS
+                  - HALO
+                  - AXE
+                  - CON
+    post:
+      tags:
+      - workspace-admin-controller
+      operationId: onBoardApplication
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  type: string
+                  enum:
+                  - Workbench
+                  - CAMS
+                  - XDP
+                  - DS
+                  - EC
+                  - SS
+                  - HALO
+                  - AXE
+                  - CON
+  /admin/groups:
+    get:
+      tags:
+      - workspace-admin-controller
+      operationId: getGroups
+      parameters:
+      - name: groupName
+        in: query
+        required: false
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/WorkspaceGroup'
+    post:
+      tags:
+      - workspace-admin-controller
+      operationId: registerGroup
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkspaceGroup'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/WorkspaceGroup'
+  /admin/groups/{groupName}/users:
+    get:
+      tags:
+      - workspace-admin-controller
+      operationId: getGroupUsers
+      parameters:
+      - name: groupName
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/WorkspaceUser'
+    post:
+      tags:
+      - workspace-admin-controller
+      operationId: addUserToGroup
+      parameters:
+      - name: groupName
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: pwcGuid
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                $ref: '#/components/schemas/WorkspaceUserGroup'
+  /workspaces/{engagementId}/metadata:
+    patch:
+      tags:
+      - workspace-controller
+      operationId: updateWorkspaceMetadata
+      parameters:
+      - name: engagementId
+        in: path
+        required: true
+        schema:
+          type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkspaceMetadata'
+        required: true
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkspaceResponse'
+  /workspaces/{engagementId}/lineage:
+    patch:
+      tags:
+      - workspace-controller
+      operationId: updateWorkspaceLineage
+      parameters:
+      - name: engagementId
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: status
+        in: query
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkspaceResponse'
+  /workspaces/{engagementId}:
+    get:
+      tags:
+      - workspace-controller
+      operationId: getWorkspace
+      parameters:
+      - name: engagementId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkspaceResponse'
+    delete:
+      tags:
+      - workspace-controller
+      operationId: deleteWorkspace
+      parameters:
+      - name: engagementId
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkspaceResponse'
+  /users/{pwcGuid}/groups:
+    get:
+      tags:
+      - workspace-user-controller
+      operationId: getUserGroups
+      parameters:
+      - name: pwcGuid
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/WorkspaceGroup'
+  /admin/permissions/{permissionName}/groups:
+    get:
+      tags:
+      - workspace-admin-controller
+      operationId: getGroupsByPermission
+      parameters:
+      - name: permissionName
+        in: path
+        required: true
+        schema:
+          type: string
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  type: string
+                  enum:
+                  - CreateWorkspace
+                  - UserManagement
+                  - UpdateWorkspace
+                  - ArchiveWorkspace
+                  - DeleteWorkspace
+  /admin/los:
+    get:
+      tags:
+      - workspace-admin-controller
+      operationId: getLineOfServices
+      responses:
+        "200":
+          description: OK
+          content:
+            '*/*':
+              schema:
+                type: array
+                items:
+                  type: string
+                  enum:
+                  - Advisory
+                  - Assurance
+                  - IFS
+                  - Tax
+components:
+  schemas:
+    UpdateUsersRequest:
+      type: object
+      properties:
+        added:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkspaceUser'
+        removed:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkspaceUser'
+    WorkspaceUser:
+      type: object
+      properties:
+        pwcGuid:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+        roles:
+          type: array
+          items:
+            type: string
+    Territory:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+    WorkspaceResponse:
+      required:
+      - dataClassification
+      - dataConsentLevel
+      - name
+      - originatingSite
+      - teamMembers
+      - territory
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        clientId:
+          type: string
+        clientName:
+          type: string
+        engagementType:
+          type: string
+        workspaceType:
+          type: string
+        originatingSite:
+          type: string
+        territory:
+          type: string
+        wbsCode:
+          type: string
+        apptioId:
+          type: string
+        lineOfService:
+          type: string
+          enum:
+          - Advisory
+          - Assurance
+          - IFS
+          - Tax
+        endDate:
+          type: string
+        dataClassification:
+          type: string
+        dataConsentLevel:
+          type: string
+        catalogVersion:
+          type: string
+        tags:
+          type: object
+          additionalProperties:
+            type: string
+        teamMembers:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkspaceUser'
+        startDate:
+          type: string
+        territoryDetails:
+          $ref: '#/components/schemas/Territory'
+        active:
+          type: boolean
+        archivedDate:
+          type: string
+        deletedDate:
+          type: string
+        lineage:
+          type: object
+          additionalProperties:
+            type: string
+        status:
+          type: string
+        externalDomains:
+          type: array
+          items:
+            type: string
+        limitDataRequest:
+          type: boolean
+        limitReportSharing:
+          type: boolean
+        teamsEnabled:
+          type: boolean
+    WorkspaceRequest:
+      required:
+      - dataClassification
+      - dataConsentLevel
+      - name
+      - originatingSite
+      - teamMembers
+      - territory
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        clientId:
+          type: string
+        clientName:
+          type: string
+        engagementType:
+          type: string
+        workspaceType:
+          type: string
+        originatingSite:
+          type: string
+        territory:
+          type: string
+        wbsCode:
+          type: string
+        apptioId:
+          type: string
+        lineOfService:
+          type: string
+          enum:
+          - Advisory
+          - Assurance
+          - IFS
+          - Tax
+        endDate:
+          type: string
+        dataClassification:
+          type: string
+        dataConsentLevel:
+          type: string
+        catalogVersion:
+          type: string
+        tags:
+          type: object
+          additionalProperties:
+            type: string
+        teamMembers:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkspaceUser'
+        teamsEnabled:
+          type: boolean
+    WorkspaceGroup:
+      type: object
+      properties:
+        groupName:
+          type: string
+        permissions:
+          type: array
+          items:
+            type: string
+            enum:
+            - CreateWorkspace
+            - UserManagement
+            - UpdateWorkspace
+            - ArchiveWorkspace
+            - DeleteWorkspace
+    WorkspaceUserGroup:
+      type: object
+      properties:
+        user:
+          $ref: '#/components/schemas/WorkspaceUser'
+        groups:
+          type: array
+          items:
+            $ref: '#/components/schemas/WorkspaceGroup'
+    WorkspaceMetadata:
+      type: object
+      properties:
+        wbsCode:
+          type: string
+        apptioId:
+          type: string
+        dataConsentLevel:
+          type: string
+        dataClassification:
+          type: string
+        externalDomains:
+          type: array
+          items:
+            type: string
+        limitDataRequest:
+          type: boolean
+        limitReportSharing:
+          type: boolean
+  securitySchemes:
+    basicAuth:
+      type: http
+      scheme: basic
+      bearerFormat: JWT
+    bearer:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
